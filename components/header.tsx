@@ -93,6 +93,8 @@ export function Header() {
           </nav>
         </div>
       )}
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6621272459770552"
+     crossorigin="anonymous"></script>
     </header>
   );
 }
