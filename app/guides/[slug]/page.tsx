@@ -33,11 +33,30 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: guide.metaTitle,
     description: guide.metaDescription,
+    alternates: {
+      canonical: `/guides/${guide.slug}`,
+    },
+    keywords: [
+      guide.title,
+      guide.category,
+      'Kenya government services',
+      'eCitizen Kenya',
+      'EasyGov Kenya',
+      ...guide.quickSummary.slice(0, 3),
+    ],
     openGraph: {
       title: guide.metaTitle,
       description: guide.metaDescription,
       type: 'article',
       url: `https://easygov.co.ke/guides/${guide.slug}`,
+      siteName: 'EasyGov Kenya',
+      locale: 'en_KE',
+      modifiedTime: '2026-05-01',
+    },
+    twitter: {
+      card: 'summary',
+      title: guide.metaTitle,
+      description: guide.metaDescription,
     },
   };
 }
@@ -80,6 +99,53 @@ export default function GuidePage({ params }: PageProps) {
       name: 'EasyGov Kenya',
       url: 'https://easygov.co.ke',
     },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://easygov.co.ke/guides/${guide.slug}`,
+    },
+    articleSection: guide.category,
+  };
+
+  const howToSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: guide.title,
+    description: guide.metaDescription,
+    step: guide.steps.map((step, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: `Step ${index + 1}`,
+      text: step,
+    })),
+    supply: guide.requirementsChecklist.map((item) => ({
+      '@type': 'HowToSupply',
+      name: item,
+    })),
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://easygov.co.ke',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Guides',
+        item: 'https://easygov.co.ke/guides',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: guide.title,
+        item: `https://easygov.co.ke/guides/${guide.slug}`,
+      },
+    ],
   };
 
   return (
@@ -91,6 +157,14 @@ export default function GuidePage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
